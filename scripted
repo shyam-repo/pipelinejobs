@@ -4,7 +4,7 @@ node('master')
    {
     git 'https://github.com/selenium-saikrishna/maven.git'
    }
-   stage('continous build')
+   stage('continous_build')
    {
        sh label: '', script: 'mvn package'
    }
