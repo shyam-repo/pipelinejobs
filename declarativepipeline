@@ -1,0 +1,93 @@
+pipeline
+
+{
+    
+agent any
+
+    stages
+
+    {
+
+        stage('cont download')
+
+        {
+
+            steps
+
+            {
+    
+            git 'https://github.com/selenium-saikrishna/maven.git'
+
+            }
+
+        }
+  
+      stage('cont build')
+
+        {
+
+            steps
+
+            {
+
+                sh label: '', script: 'mvn package'
+
+            }
+ 
+       }
+
+        stage('cont deployment')
+
+        {
+
+            steps
+
+            {
+
+              sh label: '', script: 'scp /home/ubuntu/.jenkins/workspace/declarativepipeline/webapp/target/webapp.war ubuntu@172.31.40.125:/var/lib/tomcat8/webapps/qaenv.war'
+  
+            }
+
+        }
+
+        stage('cont testing')
+
+        {
+
+            steps
+
+            {
+
+                git 'https://github.com/selenium-saikrishna/TestingNew.git'
+
+            }
+
+        }
+
+    }
+       
+       post
+
+        {
+  
+          success
+
+            {
+    
+           sh label: '', script: 'scp /home/ubuntu/.jenkins/workspace/declarativepipeline/webapp/target/webapp.war ubuntu@172.31.46.149:/var/lib/tomcat8/webapps/prodenv.war'
+ 
+            }
+
+            failure
+
+            {
+      
+          mail bcc: 'prasad', body: 'job executed succesfully', cc: 'shyam', from: '', replyTo: '', subject: 'declarative pipeline ', to: 'shyam@gmail.com'
+
+            }
+
+        }
+
+   
+    
+}
